@@ -6,8 +6,10 @@
     "name": "ChatCalc",
     "description": "A simple mod that turns your chat into a calculator.",
     "authors": ["RTTV"],
+    "contributors": ["technicfan"],
     "contact": {
-        "sources": "https://github.com/RealRTTV/chatcalc"
+        "sources": "https://github.com/technicfan/chatcalc",
+        "issues": "https://github.com/technicfan/chatcalc/issues"
     },
 
     "license": "MPL-2.0",
@@ -19,6 +21,6 @@
 
     "depends": {
         "minecraft": "${minecraft}",
-        "java": ">=17"
+        "java": ">=21"
     }
 }
