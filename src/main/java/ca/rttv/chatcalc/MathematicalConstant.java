@@ -1,10 +1,9 @@
 package ca.rttv.chatcalc;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.MathHelper;
-
 import java.util.LinkedHashSet;
 import java.util.function.DoubleSupplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 
 public class MathematicalConstant {
     public static final LinkedHashSet<MathematicalConstant> CONSTANTS = new LinkedHashSet<>();
@@ -14,15 +13,15 @@ public class MathematicalConstant {
         CONSTANTS.add(new MathematicalConstant("rand", Math::random));
         CONSTANTS.add(new MathematicalConstant("rad", () -> Config.radians() ? 1.0 : 57.29577951308232));
         CONSTANTS.add(new MathematicalConstant("deg", () -> Config.radians() ? 0.017453292519943295 : 1.0));
-        CONSTANTS.add(new MathematicalConstant("yaw", () -> Config.convertFromDegrees(MathHelper.wrapDegrees(MinecraftClient.getInstance().player.getYaw()))));
-        CONSTANTS.add(new MathematicalConstant("pitch", () -> Config.convertFromDegrees(MathHelper.wrapDegrees(MinecraftClient.getInstance().player.getPitch()))));
+        CONSTANTS.add(new MathematicalConstant("yaw", () -> Config.convertFromDegrees(Mth.wrapDegrees(Minecraft.getInstance().player.getYRot()))));
+        CONSTANTS.add(new MathematicalConstant("pitch", () -> Config.convertFromDegrees(Mth.wrapDegrees(Minecraft.getInstance().player.getXRot()))));
         CONSTANTS.add(new MathematicalConstant("pi", () -> Math.PI));
         CONSTANTS.add(new MathematicalConstant("tau", () -> 2.0d * Math.PI));
         CONSTANTS.add(new MathematicalConstant("e", () -> Math.E));
         CONSTANTS.add(new MathematicalConstant("phi", () -> 1.6180339887498948482));
-        CONSTANTS.add(new MathematicalConstant("x", () -> MinecraftClient.getInstance().player.getX()));
-        CONSTANTS.add(new MathematicalConstant("y", () -> MinecraftClient.getInstance().player.getY()));
-        CONSTANTS.add(new MathematicalConstant("z", () -> MinecraftClient.getInstance().player.getZ()));
+        CONSTANTS.add(new MathematicalConstant("x", () -> Minecraft.getInstance().player.getX()));
+        CONSTANTS.add(new MathematicalConstant("y", () -> Minecraft.getInstance().player.getY()));
+        CONSTANTS.add(new MathematicalConstant("z", () -> Minecraft.getInstance().player.getZ()));
     }
 
     private final String name;

@@ -2,12 +2,12 @@ package ca.rttv.chatcalc;
 
 import com.mojang.datafixers.util.Either;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -26,10 +26,10 @@ public class ChatCalc {
     public static final char SEPARATOR_CHAR = ';';
 
     @Contract(value = "_->_", mutates = "param1")
-    public static boolean tryParse(@NotNull TextFieldWidget field) {
-        final MinecraftClient client = MinecraftClient.getInstance();
-        String originalText = field.getText();
-        int cursor = field.getCursor();
+    public static boolean tryParse(@NotNull EditBox field) {
+        final Minecraft client = Minecraft.getInstance();
+        String originalText = field.getValue();
+        int cursor = field.getCursorPosition();
         String text = ChatHelper.getSection(originalText, cursor);
         {
             String[] split = text.split("=");
@@ -58,7 +58,7 @@ public class ChatCalc {
                 if (Config.JSON.has(split[0])) {
                     return ChatHelper.replaceSection(field, Config.JSON.get(split[0]).getAsString());
                 } else if (!split[0].isEmpty() && Config.JSON.has(split[0].substring(0, split[0].length() - 1)) && split[0].endsWith("?") && client.player != null) {
-                    client.player.sendMessage(Text.translatable("chatcalc." + split[0].substring(0, split[0].length() - 1) + ".description"), false);
+                    client.player.displayClientMessage(Component.translatable("chatcalc." + split[0].substring(0, split[0].length() - 1) + ".description"), false);
                     return false;
                 } else {
                     Optional<Either<CustomFunction, CustomConstant>> either = parseDeclaration(text);
@@ -85,16 +85,16 @@ public class ChatCalc {
         }
 
         if ((text.equals("config?") || text.equals("cfg?") || text.equals("?")) && client.player != null) {
-            client.player.sendMessage(Text.translatable("chatcalc.config.description"), false);
+            client.player.displayClientMessage(Component.translatable("chatcalc.config.description"), false);
             return false;
         } else if (text.equals("testcases?")) {
             Testcases.test(Testcases.TESTCASES);
             return false;
         } else if (text.equals("functions?")) {
-            client.player.sendMessage(Config.FUNCTIONS.values().stream().map(CustomFunction::toString).map(str -> Text.literal(str).styled(style -> style.withClickEvent(new ClickEvent.CopyToClipboard(str)).withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy to clipboard"))))).collect(() -> Text.literal("Currently defined custom functions are:"), (a, b) -> a.append(Text.literal("\n").append(b)), MutableText::append), false);
+            client.player.displayClientMessage(Config.FUNCTIONS.values().stream().map(CustomFunction::toString).map(str -> Component.literal(str).withStyle(style -> style.withClickEvent(new ClickEvent.CopyToClipboard(str)).withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to copy to clipboard"))))).collect(() -> Component.literal("Currently defined custom functions are:"), (a, b) -> a.append(Component.literal("\n").append(b)), MutableComponent::append), false);
             return false;
         } else if (text.equals("constants?")) {
-            client.player.sendMessage(Config.CONSTANTS.values().stream().map(CustomConstant::toString).map(str -> Text.literal(str).styled(style -> style.withClickEvent(new ClickEvent.CopyToClipboard(str)).withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy to clipboard"))))).collect(() -> Text.literal("Currently defined custom constants are:"), (a, b) -> a.append(Text.literal("\n").append(b)), MutableText::append), false);
+            client.player.displayClientMessage(Config.CONSTANTS.values().stream().map(CustomConstant::toString).map(str -> Component.literal(str).withStyle(style -> style.withClickEvent(new ClickEvent.CopyToClipboard(str)).withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to copy to clipboard"))))).collect(() -> Component.literal("Currently defined custom constants are:"), (a, b) -> a.append(Component.literal("\n").append(b)), MutableComponent::append), false);
             return false;
         } else if (NUMBER.matcher(text).matches()) {
             return false;
@@ -111,8 +111,8 @@ public class ChatCalc {
                 double result = Config.makeEngine().eval(text, new FunctionParameter[0]);
                 double micros = (System.nanoTime() - start) / 1_000.0;
                 if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-                    MinecraftClient.getInstance().player.sendMessage(Text.literal("Took " + micros + "µs to parse equation"), true);
-                    MinecraftClient.getInstance().player.sendMessage(Text.literal("Took " + micros + "µs to parse equation"), false);
+                    Minecraft.getInstance().player.displayClientMessage(Component.literal("Took " + micros + "µs to parse equation"), true);
+                    Minecraft.getInstance().player.displayClientMessage(Component.literal("Took " + micros + "µs to parse equation"), false);
                 }
                 String solution = Config.getDecimalFormat().format(result); // so fast that creating a new one everytime doesn't matter, also lets me use fields
                 if (solution.equals("-0")) {

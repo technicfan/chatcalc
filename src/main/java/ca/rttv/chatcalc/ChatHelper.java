@@ -1,33 +1,33 @@
 package ca.rttv.chatcalc;
 
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.components.EditBox;
 
 public class ChatHelper {
     public static String getSection(String input, int cursor) {
         return input.substring(ChatHelper.getStartOfSection(input, cursor), ChatHelper.getEndOfSection(input, cursor));
     }
 
-    public static boolean replaceSection(TextFieldWidget field, String replacement) {
-        String input = field.getText();
-        int cursor = field.getCursor();
+    public static boolean replaceSection(EditBox field, String replacement) {
+        String input = field.getValue();
+        int cursor = field.getCursorPosition();
         int start = ChatHelper.getStartOfSection(input, cursor);
         int end = ChatHelper.getEndOfSection(input, cursor);
         String output = input.substring(0, start) + replacement + input.substring(end);
         if (output.length() > 256 || input.substring(start, end).equals(replacement)) {
             return false;
         }
-        field.setText(output);
+        field.setValue(output);
         return true;
     }
 
-    public static boolean addSectionAfterIndex(TextFieldWidget field, String word) {
-        String input = field.getText();
-        int index = ChatHelper.getEndOfSection(input, field.getCursor());
+    public static boolean addSectionAfterIndex(EditBox field, String word) {
+        String input = field.getValue();
+        int index = ChatHelper.getEndOfSection(input, field.getCursorPosition());
         String output = input.substring(0, index) + word + input.substring(index);
         if (output.length() > 256) {
             return false;
         }
-        field.setText(output);
+        field.setValue(output);
         return true;
     }
 

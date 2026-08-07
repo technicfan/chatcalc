@@ -1,11 +1,10 @@
 package ca.rttv.chatcalc;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.util.math.MathHelper;
-
 import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 public interface Testcases {
     List<Pair<String, Double>> TESTCASES = List.<Pair<String, Double>>of(
@@ -59,7 +58,7 @@ public interface Testcases {
             new Pair<>("-5%-360", -5.0d),
             new Pair<>("min(sqrt(37);6", 6.0d),
             new Pair<>("max(sqrt(37);7", 7.0d),
-            new Pair<>("max(sqrt(2);sqrt(3);sqrt(5);sqrt(7);sqrt(11);sqrt(13);sqrt(17);sqrt(19);sqrt(23);sqrt(29);sqrt(31);sqrt(37);sqrt(41", (double) MathHelper.sqrt(41)),
+            new Pair<>("max(sqrt(2);sqrt(3);sqrt(5);sqrt(7);sqrt(11);sqrt(13);sqrt(17);sqrt(19);sqrt(23);sqrt(29);sqrt(31);sqrt(37);sqrt(41", (double) Mth.sqrt(41)),
             new Pair<>("clamp(-e;-2;4)", -2.0d),
             new Pair<>("clamp(pi^2;-2;4", 4.0d),
             new Pair<>("clamp(pi;-2;4)", Math.PI),
@@ -72,18 +71,18 @@ public interface Testcases {
     );
 
     static void test(List<Pair<String, Double>> list) {
-        final MinecraftClient client = MinecraftClient.getInstance();
+        final Minecraft client = Minecraft.getInstance();
 
         for (Pair<String, Double> entry : list) {
             try {
                 double result = Config.makeEngine().eval(entry.getFirst(), new FunctionParameter[0]);
                 if (Math.abs(entry.getSecond() - result) <= 0.000001) {
-                    client.player.sendMessage(Text.literal("§aTest case passed: " + entry.getFirst() + ", got " + entry.getSecond()), false);
+                    client.player.displayClientMessage(Component.literal("§aTest case passed: " + entry.getFirst() + ", got " + entry.getSecond()), false);
                 } else {
-                    client.player.sendMessage(Text.literal("§cTest case §n§cfailed: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + result), false);
+                    client.player.displayClientMessage(Component.literal("§cTest case §n§cfailed: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + result), false);
                 }
             } catch (Exception e) {
-                client.player.sendMessage(Text.literal("§cTest case failed with exception: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + e), false);
+                client.player.displayClientMessage(Component.literal("§cTest case failed with exception: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + e), false);
             }
         }
     }

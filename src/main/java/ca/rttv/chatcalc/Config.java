@@ -3,13 +3,12 @@ package ca.rttv.chatcalc;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.MinecraftClient;
-
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import net.minecraft.client.Minecraft;
 
 public class Config {
     public static final JsonObject JSON;
@@ -115,8 +114,8 @@ public class Config {
 
     public static void saveToChatHud(String input) {
         if (JSON.get("copy_type").getAsString().equalsIgnoreCase("chat_history")) {
-            final MinecraftClient client = MinecraftClient.getInstance();
-            client.inGameHud.getChatHud().addToMessageHistory(input);
+            final Minecraft client = Minecraft.getInstance();
+            client.gui.getChat().addRecentChat(input);
         }
     }
 
@@ -131,8 +130,8 @@ public class Config {
 
     public static void saveToClipboard(String input) {
         if (JSON.get("copy_type").getAsString().equalsIgnoreCase("clipboard")) {
-            final MinecraftClient client = MinecraftClient.getInstance();
-            client.keyboard.setClipboard(input);
+            final Minecraft client = Minecraft.getInstance();
+            client.keyboardHandler.setClipboard(input);
         }
     }
 

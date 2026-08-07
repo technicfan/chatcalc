@@ -1,8 +1,6 @@
 package ca.rttv.chatcalc;
 
 import com.google.common.math.DoubleMath;
-import net.minecraft.util.math.MathHelper;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -10,6 +8,7 @@ import java.util.OptionalDouble;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
+import net.minecraft.util.Mth;
 
 public final class MathematicalFunction {
     public static final Map<String, Function<double[], OptionalDouble>> FUNCTIONS;
@@ -58,7 +57,7 @@ public final class MathematicalFunction {
         FUNCTIONS.put("max", values -> DoubleStream.of(values).max());
         FUNCTIONS.put("gcf", values -> DoubleStream.of(values).reduce(MathematicalFunction::gcf));
         FUNCTIONS.put("lcm", values -> DoubleStream.of(values).reduce(MathematicalFunction::lcm));
-        FUNCTIONS.put("clamp", values -> values.length == 3 ? OptionalDouble.of(MathHelper.clamp(values[0], values[1], values[2])) : OptionalDouble.empty());
+        FUNCTIONS.put("clamp", values -> values.length == 3 ? OptionalDouble.of(Mth.clamp(values[0], values[1], values[2])) : OptionalDouble.empty());
         FUNCTIONS.put("cmp", values -> (values.length >= 2 && values.length <= 3) ? OptionalDouble.of((Math.abs(values[0] - values[1]) <= (values.length == 2 ? 0.0 : values[2])) ? 0.0d : (values[0] < values[1] ? -1.0d : (values[0] > values[1] ? 1.0d : 0.0d))) : OptionalDouble.empty());
     }
 

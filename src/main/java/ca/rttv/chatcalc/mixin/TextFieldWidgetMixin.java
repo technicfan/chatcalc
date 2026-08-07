@@ -4,13 +4,6 @@ import ca.rttv.chatcalc.ChatCalc;
 import ca.rttv.chatcalc.ChatHelper;
 import ca.rttv.chatcalc.Config;
 import ca.rttv.chatcalc.FunctionParameter;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -23,18 +16,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.OptionalDouble;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
-@Mixin(TextFieldWidget.class)
-abstract class TextFieldWidgetMixin extends ClickableWidget {
-    public TextFieldWidgetMixin(int x, int y, int width, int height, Text message) {
+@Mixin(EditBox.class)
+abstract class TextFieldWidgetMixin extends AbstractWidget {
+    public TextFieldWidgetMixin(int x, int y, int width, int height, Component message) {
         super(x, y, width, height, message);
     }
 
-    @Shadow @Final private TextRenderer textRenderer;
+    @Shadow @Final private Font font;
 
-    @Shadow public native int getCursor();
+    @Shadow public native int getCursorPosition();
 
-    @Shadow public native String getText();
+    @Shadow public native String getValue();
 
     @Shadow
     private int textY;
@@ -44,7 +43,7 @@ abstract class TextFieldWidgetMixin extends ClickableWidget {
     private Pair<String, OptionalDouble> evaluationCache;
 
     @Inject(method = "renderWidget", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Ljava/lang/String;isEmpty()Z", ordinal = 1))
-    private void renderWidget1202(CallbackInfo ci, @Local DrawContext context, @Local(ordinal = 4) int k) {
+    private void renderWidget1202(CallbackInfo ci, @Local GuiGraphics context, @Local(ordinal = 4) int k) {
         displayAbove(context, k, textY);
     }
 
@@ -54,8 +53,8 @@ abstract class TextFieldWidgetMixin extends ClickableWidget {
 //    }
 
     @Unique
-    private void displayAbove(DrawContext context, int x, int y) {
-        if (!(getMessage().getContent() instanceof TranslatableTextContent translatable && translatable.getKey().equals("chat.editBox"))) {
+    private void displayAbove(GuiGraphics context, int x, int y) {
+        if (!(getMessage().getContents() instanceof TranslatableContents translatable && translatable.getKey().equals("chat.editBox"))) {
             return;
         }
 
@@ -64,7 +63,7 @@ abstract class TextFieldWidgetMixin extends ClickableWidget {
             return;
         }
 
-        String word = ChatHelper.getSection(getText(), getCursor());
+        String word = ChatHelper.getSection(getValue(), getCursorPosition());
 
         if (ChatCalc.NUMBER.matcher(word).matches()) {
             evaluationCache = null;
@@ -85,8 +84,8 @@ abstract class TextFieldWidgetMixin extends ClickableWidget {
                 result = Config.makeEngine().eval(word, new FunctionParameter[0]);
                 evaluationCache = new Pair<>(word, OptionalDouble.of(result));
             }
-            Text text = Text.literal("=" + Config.getDecimalFormat().format(result));
-            context.drawTooltip(textRenderer, text, x - 8, y - 4);
+            Component text = Component.literal("=" + Config.getDecimalFormat().format(result));
+            context.setTooltipForNextFrame(font, text, x - 8, y - 4);
         } catch (Throwable ignored) {
             evaluationCache = new Pair<>(word, OptionalDouble.empty());
         }
