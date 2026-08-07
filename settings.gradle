@@ -8,3 +8,18 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+plugins {
+    id "dev.kikugie.stonecutter" version "0.8.3"
+}
+
+stonecutter {
+    kotlinController = false
+    centralScript = "build.gradle"
+
+    create (getRootProject()) { 
+        versions "1.21.11"
+        versions "26.1", "26.2" buildscript "unobfuscated.gradle"
+        vcsVersion = "1.21.11"
+    }
+}

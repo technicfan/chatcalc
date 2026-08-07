@@ -1,8 +1,25 @@
 package ca.rttv.chatcalc;
 
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 
 public class ChatHelper {
+    // a helper method for easily sending client messages in 26.1+
+    public static void sendMessage(LocalPlayer player, Component message, boolean overlay) {
+        //? if <=1.21.11 {
+        player.displayClientMessage(message, overlay);
+        //?} else {
+        /*
+        if (overlay) {
+            player.sendOverlayMessage(message);
+        } else {
+            player.sendSystemMessage(message);
+        }
+        */
+        //?}
+    }
+
     public static String getSection(String input, int cursor) {
         return input.substring(ChatHelper.getStartOfSection(input, cursor), ChatHelper.getEndOfSection(input, cursor));
     }

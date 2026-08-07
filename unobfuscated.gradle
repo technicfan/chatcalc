@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.15-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 }
 
 version = project.mod_version
@@ -11,9 +11,15 @@ base {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${sc.current.version}"
-	mappings loom.officialMojangMappings() 
 
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+stonecutter {
+    replacements.string(true) {
+       replace "GuiGraphics", "GuiGraphicsExtractor"
+       replace "renderWidget", "extractWidgetRenderState"
+    }
 }
 
 processResources {
@@ -26,14 +32,14 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {

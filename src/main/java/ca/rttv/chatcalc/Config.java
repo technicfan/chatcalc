@@ -115,7 +115,7 @@ public class Config {
     public static void saveToChatHud(String input) {
         if (JSON.get("copy_type").getAsString().equalsIgnoreCase("chat_history")) {
             final Minecraft client = Minecraft.getInstance();
-            client.gui.getChat().addRecentChat(input);
+            client.gui./*?if 26.2 {*//*hud.*//*?}*/getChat().addRecentChat(input);
         }
     }
 
