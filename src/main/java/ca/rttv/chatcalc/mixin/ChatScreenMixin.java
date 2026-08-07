@@ -6,6 +6,8 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import net.minecraft.client.gui.screen.ChatInputSuggestor;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,11 +24,11 @@ abstract class ChatScreenMixin {
     @Shadow
     ChatInputSuggestor chatInputSuggestor;
 
-    @Inject(at = @At("HEAD"), method = "keyPressed(III)Z", cancellable = true)
-    private void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(at = @At("HEAD"), method = "keyPressed(Lnet/minecraft/client/input/KeyInput;)Z", cancellable = true)
+    private void keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
         CompletableFuture<Suggestions> suggestions = ((ChatInputSuggesterDuck) this.chatInputSuggestor).chatcalc$pendingSuggestions();
         if ((suggestions != null && suggestions.isDone() && !suggestions.isCompletedExceptionally() && suggestions.getNow(null).isEmpty())) {
-            if (keyCode == 258 && ChatCalc.tryParse(chatField)) {
+            if (input.key() == 258 && ChatCalc.tryParse(chatField)) {
                 cir.setReturnValue(true);
             }
         }

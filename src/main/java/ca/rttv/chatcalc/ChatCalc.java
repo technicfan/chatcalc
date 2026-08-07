@@ -58,7 +58,7 @@ public class ChatCalc {
                 if (Config.JSON.has(split[0])) {
                     return ChatHelper.replaceSection(field, Config.JSON.get(split[0]).getAsString());
                 } else if (!split[0].isEmpty() && Config.JSON.has(split[0].substring(0, split[0].length() - 1)) && split[0].endsWith("?") && client.player != null) {
-                    client.player.sendMessage(Text.translatable("chatcalc." + split[0].substring(0, split[0].length() - 1) + ".description"));
+                    client.player.sendMessage(Text.translatable("chatcalc." + split[0].substring(0, split[0].length() - 1) + ".description"), false);
                     return false;
                 } else {
                     Optional<Either<CustomFunction, CustomConstant>> either = parseDeclaration(text);
@@ -83,18 +83,18 @@ public class ChatCalc {
                 }
             }
         }
-        
+
         if ((text.equals("config?") || text.equals("cfg?") || text.equals("?")) && client.player != null) {
-            client.player.sendMessage(Text.translatable("chatcalc.config.description"));
+            client.player.sendMessage(Text.translatable("chatcalc.config.description"), false);
             return false;
         } else if (text.equals("testcases?")) {
             Testcases.test(Testcases.TESTCASES);
             return false;
         } else if (text.equals("functions?")) {
-            client.player.sendMessage(Config.FUNCTIONS.values().stream().map(CustomFunction::toString).map(str -> Text.literal(str).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, str)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to copy to clipboard"))))).collect(() -> Text.literal("Currently defined custom functions are:"), (a, b) -> a.append(Text.literal("\n").append(b)), MutableText::append));
+            client.player.sendMessage(Config.FUNCTIONS.values().stream().map(CustomFunction::toString).map(str -> Text.literal(str).styled(style -> style.withClickEvent(new ClickEvent.CopyToClipboard(str)).withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy to clipboard"))))).collect(() -> Text.literal("Currently defined custom functions are:"), (a, b) -> a.append(Text.literal("\n").append(b)), MutableText::append), false);
             return false;
         } else if (text.equals("constants?")) {
-            client.player.sendMessage(Config.CONSTANTS.values().stream().map(CustomConstant::toString).map(str -> Text.literal(str).styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, str)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to copy to clipboard"))))).collect(() -> Text.literal("Currently defined custom constants are:"), (a, b) -> a.append(Text.literal("\n").append(b)), MutableText::append));
+            client.player.sendMessage(Config.CONSTANTS.values().stream().map(CustomConstant::toString).map(str -> Text.literal(str).styled(style -> style.withClickEvent(new ClickEvent.CopyToClipboard(str)).withHoverEvent(new HoverEvent.ShowText(Text.literal("Click to copy to clipboard"))))).collect(() -> Text.literal("Currently defined custom constants are:"), (a, b) -> a.append(Text.literal("\n").append(b)), MutableText::append), false);
             return false;
         } else if (NUMBER.matcher(text).matches()) {
             return false;

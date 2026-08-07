@@ -78,12 +78,12 @@ public interface Testcases {
             try {
                 double result = Config.makeEngine().eval(entry.getFirst(), new FunctionParameter[0]);
                 if (Math.abs(entry.getSecond() - result) <= 0.000001) {
-                    client.player.sendMessage(Text.literal("§aTest case passed: " + entry.getFirst() + ", got " + entry.getSecond()));
+                    client.player.sendMessage(Text.literal("§aTest case passed: " + entry.getFirst() + ", got " + entry.getSecond()), false);
                 } else {
-                    client.player.sendMessage(Text.literal("§cTest case §n§cfailed: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + result));
+                    client.player.sendMessage(Text.literal("§cTest case §n§cfailed: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + result), false);
                 }
             } catch (Exception e) {
-                client.player.sendMessage(Text.literal("§cTest case failed with exception: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + e));
+                client.player.sendMessage(Text.literal("§cTest case failed with exception: " + entry.getFirst() + ", expected " + entry.getSecond() + ", got " + e), false);
             }
         }
     }

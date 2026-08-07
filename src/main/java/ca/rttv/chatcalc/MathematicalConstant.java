@@ -20,9 +20,9 @@ public class MathematicalConstant {
         CONSTANTS.add(new MathematicalConstant("tau", () -> 2.0d * Math.PI));
         CONSTANTS.add(new MathematicalConstant("e", () -> Math.E));
         CONSTANTS.add(new MathematicalConstant("phi", () -> 1.6180339887498948482));
-        CONSTANTS.add(new MathematicalConstant("x", () -> MinecraftClient.getInstance().player.getPos().x));
-        CONSTANTS.add(new MathematicalConstant("y", () -> MinecraftClient.getInstance().player.getPos().y));
-        CONSTANTS.add(new MathematicalConstant("z", () -> MinecraftClient.getInstance().player.getPos().z));
+        CONSTANTS.add(new MathematicalConstant("x", () -> MinecraftClient.getInstance().player.getX()));
+        CONSTANTS.add(new MathematicalConstant("y", () -> MinecraftClient.getInstance().player.getY()));
+        CONSTANTS.add(new MathematicalConstant("z", () -> MinecraftClient.getInstance().player.getZ()));
     }
 
     private final String name;
