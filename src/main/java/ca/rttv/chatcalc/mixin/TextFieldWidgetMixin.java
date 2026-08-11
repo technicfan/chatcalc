@@ -47,11 +47,6 @@ abstract class TextFieldWidgetMixin extends AbstractWidget {
         displayAbove(context, k, textY);
     }
 
-//    @Inject(method = "renderButton", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Ljava/lang/String;isEmpty()Z", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
-//    private void renderWidget1201(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci, int i, int j, int k, String string, boolean bl, boolean bl2, int l, int m, int n, boolean bl3, int o) {
-//        displayAbove(context, o, m);
-//    }
-
     @Unique
     private void displayAbove(GuiGraphics context, int x, int y) {
         if (!(getMessage().getContents() instanceof TranslatableContents translatable && translatable.getKey().equals("chat.editBox"))) {

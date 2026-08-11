@@ -20,6 +20,9 @@ stonecutter {
        replace "GuiGraphics", "GuiGraphicsExtractor"
        replace "renderWidget", "extractWidgetRenderState"
     }
+    replacements.string(current.parsed.matches(">26.2")) {
+       replace "blazed3d", "renderpearl.api"
+    }
 }
 
 processResources {
